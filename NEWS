@@ -4,6 +4,8 @@ Changes in version 2026.5.29
 - atime_pkg() now uses only a common subset of columns of the measurements table from each test, so that each test can have different units to analyze.
 - atime_pkg() and atime_pkg_test_info() gain verbose arg.
 - glob_find_replace() gains warn arg, to warn if there were no replacements made.
+- glob_find_replace() gains fixed arg, for literal string replacement.
+- pkg.edit.default() rewrites PKG:: references in man/*.Rd during versioned installs, so build-stage \\Sexpr calls resolve to PKG.SHA (fixes animint/animint2#340).
 - atime_versions() runs setup using the HEAD commit (if present).
 - atime_versions() bugfix for Rcpp packages that useDynLib(pkg) in NAMESPACE (without registration), new editing of PACKAGE args in R/RcppExports.R.
 - atime() now allows different column names in 1-row result data frames, either in different expressions, or different N.

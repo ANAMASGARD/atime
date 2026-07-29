@@ -1,8 +1,8 @@
-glob_find_replace <- function(glob, FIND, REPLACE, warn=TRUE){
+glob_find_replace <- function(glob, FIND, REPLACE, warn=TRUE, fixed=FALSE){
   some.files <- Sys.glob(glob)
   for(f in some.files){
     l.old <- readLines(f)
-    l.new <- gsub(FIND, REPLACE, l.old)
+    l.new <- gsub(FIND, REPLACE, l.old, fixed=fixed)
     if(identical(l.old, l.new)){
       if(warn)warning(sprintf(
         "no changes to %s when FIND=%s and replace=%s",
@@ -14,8 +14,9 @@ glob_find_replace <- function(glob, FIND, REPLACE, warn=TRUE){
 }
 
 pkg.edit.default <- function(old.Package, new.Package, sha, new.pkg.path){
-  pkg_find_replace <- function(glob, FIND, REPLACE, warn=TRUE){
-    glob_find_replace(file.path(new.pkg.path, glob), FIND, REPLACE, warn)
+  pkg_find_replace <- function(glob, FIND, REPLACE, warn=TRUE, fixed=FALSE){
+    glob_find_replace(
+      file.path(new.pkg.path, glob), FIND, REPLACE, warn, fixed)
   }
   pkg_find_replace(
     "DESCRIPTION", 
@@ -36,6 +37,12 @@ pkg.edit.default <- function(old.Package, new.Package, sha, new.pkg.path){
     "NAMESPACE",
     sprintf('useDynLib\\("?%s"?', Package_),
     paste0('useDynLib(', new.Package))
+  pkg_find_replace(
+    file.path("man", "*.Rd"),
+    paste0(old.Package, "::"),
+    paste0(new.Package, "::"),
+    fixed=TRUE,
+    warn=FALSE)
 }
 
 atime_versions_remove <- function(Package){
